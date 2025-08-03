@@ -1,0 +1,65 @@
+name: Test Proxy Forwarding
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize, reopened ]
+    paths:
+      - 'mocks/polkadot-proxy-forwarding.json'
+      - 'tests/pytest/test_proxy_forwarding.py'
+      - 'tests/pytest/requirements.txt'
+      - '.github/workflows/test-proxy-forwarding.yml'
+  push:
+    branches: [ main ]
+    paths:
+      - 'mocks/polkadot-proxy-forwarding.json'
+      - 'tests/pytest/test_proxy_forwarding.py'
+      - 'tests/pytest/requirements.txt'
+      - '.github/workflows/test-proxy-forwarding.yml'
+  workflow_dispatch:
+  schedule:
+    # Run daily at 2 AM UTC to test live endpoint connectivity
+    - cron: '0 2 * * *'
+
+jobs:
+  test-proxy-forwarding:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r tests/pytest/requirements.txt
+
+      - name: Run proxy forwarding tests
+        env:
+          TESTCONTAINERS_RYUK_DISABLED: true
+          TESTCONTAINERS_CHECKS_DISABLE: true
+        run: |
+          pytest tests/pytest/test_proxy_forwarding.py -v -s -m network
+        continue-on-error: false  # Fail the workflow if proxy tests fail
+
+      - name: Test summary
+        if: success()
+        run: |
+          echo "✅ Proxy forwarding tests completed!"
+          echo "✅ Successfully tested forwarding to live Polkadot network"
+          echo "✅ All proxy RPC method responses verified."
+
+      - name: Network failure notice
+        if: failure()
+        run: |
+          echo "❌ Proxy forwarding tests failed!"
+          echo "This could be due to:"
+          echo "  - Network connectivity issues"
+          echo "  - Live Polkadot RPC endpoint unavailable"
+          echo "  - Configuration issues in polkadot-proxy-forwarding.json"
+          echo "Check the test logs above for more details."

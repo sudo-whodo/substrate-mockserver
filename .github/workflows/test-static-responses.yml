@@ -1,0 +1,51 @@
+name: Test Static Responses
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize, reopened ]
+    paths:
+      - 'mocks/polkadot-static-responses.json'
+      - 'tests/pytest/test_static_responses.py'
+      - 'tests/pytest/requirements.txt'
+      - '.github/workflows/test-static-responses.yml'
+  push:
+    branches: [ main ]
+    paths:
+      - 'mocks/polkadot-static-responses.json'
+      - 'tests/pytest/test_static_responses.py'
+      - 'tests/pytest/requirements.txt'
+      - '.github/workflows/test-static-responses.yml'
+  workflow_dispatch:
+
+jobs:
+  test-static-responses:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r tests/pytest/requirements.txt
+
+      - name: Run static response tests
+        env:
+          TESTCONTAINERS_RYUK_DISABLED: true
+          TESTCONTAINERS_CHECKS_DISABLE: true
+        run: |
+          pytest tests/pytest/test_static_responses.py -v -s
+
+      - name: Test summary
+        if: success()
+        run: |
+          echo "✅ Static response tests completed!"
+          echo "✅ Successfully loaded mocks/polkadot-static-responses.json"
+          echo "✅ All static mock RPC method responses verified."

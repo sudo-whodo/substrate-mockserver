@@ -53,47 +53,83 @@ Utility methods for testing and development purposes.
 
 ### Using Docker
 
-#### Basic Usage
+#### Static Mock Responses
 ```bash
-# Pull and run MockServer with the mock configuration
+# Pull and run MockServer with static mock responses
 docker run -d \
   --name substrate-mockserver \
   -p 9933:1080 \
-  -v $(pwd)/mocks/polkadot-full-mock.json:/mockserver/expectations.json \
+  -v $(pwd)/mocks/polkadot-static-responses.json:/mockserver/expectations.json \
+  mockserver/mockserver:latest
+```
+
+#### Live Proxy to Polkadot Network
+```bash
+# Pull and run MockServer as a proxy to live Polkadot RPC
+docker run -d \
+  --name substrate-proxy \
+  -p 9933:1080 \
+  -v $(pwd)/mocks/polkadot-proxy-forwarding.json:/mockserver/expectations.json \
   mockserver/mockserver:latest
 ```
 
 #### For Mac ARM Users
 ```bash
-# Use platform flag for ARM-based Macs
+# Static mocks - Use platform flag for ARM-based Macs
 docker run -d \
   --platform linux/amd64 \
   --name substrate-mockserver \
   -p 9933:1080 \
-  -v $(pwd)/mocks/polkadot-full-mock.json:/mockserver/expectations.json \
+  -v $(pwd)/mocks/polkadot-static-responses.json:/mockserver/expectations.json \
+  mockserver/mockserver:latest
+
+# Live proxy - Use platform flag for ARM-based Macs
+docker run -d \
+  --platform linux/amd64 \
+  --name substrate-proxy \
+  -p 9933:1080 \
+  -v $(pwd)/mocks/polkadot-proxy-forwarding.json:/mockserver/expectations.json \
   mockserver/mockserver:latest
 ```
 
 ### Using Podman
 
-#### Basic Usage
+#### Static Mock Responses
 ```bash
-# Pull and run MockServer with Podman
+# Pull and run MockServer with static mock responses
 podman run -d \
   --name substrate-mockserver \
   -p 9933:1080 \
-  -v $(pwd)/mocks/polkadot-full-mock.json:/mockserver/expectations.json \
+  -v $(pwd)/mocks/polkadot-static-responses.json:/mockserver/expectations.json \
+  docker.io/mockserver/mockserver:latest
+```
+
+#### Live Proxy to Polkadot Network
+```bash
+# Pull and run MockServer as a proxy to live Polkadot RPC
+podman run -d \
+  --name substrate-proxy \
+  -p 9933:1080 \
+  -v $(pwd)/mocks/polkadot-proxy-forwarding.json:/mockserver/expectations.json \
   docker.io/mockserver/mockserver:latest
 ```
 
 #### For Mac ARM Users
 ```bash
-# Use platform flag for ARM-based Macs with Podman
+# Static mocks - Use platform flag for ARM-based Macs with Podman
 podman run -d \
   --platform linux/amd64 \
   --name substrate-mockserver \
   -p 9933:1080 \
-  -v $(pwd)/mocks/polkadot-full-mock.json:/mockserver/expectations.json \
+  -v $(pwd)/mocks/polkadot-static-responses.json:/mockserver/expectations.json \
+  docker.io/mockserver/mockserver:latest
+
+# Live proxy - Use platform flag for ARM-based Macs with Podman
+podman run -d \
+  --platform linux/amd64 \
+  --name substrate-proxy \
+  -p 9933:1080 \
+  -v $(pwd)/mocks/polkadot-proxy-forwarding.json:/mockserver/expectations.json \
   docker.io/mockserver/mockserver:latest
 ```
 
@@ -130,11 +166,19 @@ curl -X POST http://localhost:9933 \
 
 ## Configuration
 
-The mock responses are defined in `mocks/polkadot-full-mock.json`. This file contains MockServer expectations that define:
+This repository includes two types of mock configurations:
 
+### 1. Static Mock Responses (`mocks/polkadot-static-responses.json`)
+Contains predefined mock responses for common Substrate RPC methods. This file defines:
 - HTTP request patterns to match
 - Corresponding HTTP responses to return
 - Headers and status codes
+
+### 2. Live Proxy Configuration (`mocks/polkadot-proxy-forwarding.json`)
+Forwards all requests to a live Polkadot RPC endpoint at `rpc.ibp.network/polkadot`. This configuration:
+- Proxies all JSON-RPC POST requests to the live endpoint
+- Forwards GET requests for health checks or other endpoints
+- Uses HTTPS on port 443 for secure communication
 
 ### Customizing Responses
 
@@ -214,8 +258,19 @@ curl -X POST http://your-load-balancer:9933 \
 ```
 
 ### CI/CD Pipeline Testing
-Integrate the mockserver into your CI/CD pipelines for testing service deployments:
+This repository includes automated testing via GitHub Actions with separate workflows:
 
+**Static Response Testing (`.github/workflows/test-static-responses.yml`):**
+- Runs on every PR and push
+- Tests static mock responses quickly and reliably
+- No network dependencies
+
+**Proxy Forwarding Testing (`.github/workflows/test-proxy-forwarding.yml`):**
+- Runs on PR/push and daily schedule
+- Tests live network connectivity
+- May fail due to network issues
+
+**Example integration in your own projects:**
 ```yaml
 # Example GitHub Actions step
 - name: Start Substrate Mockserver
@@ -223,11 +278,46 @@ Integrate the mockserver into your CI/CD pipelines for testing service deploymen
     docker run -d \
       --name substrate-mockserver \
       -p 9933:1080 \
-      -v ${{ github.workspace }}/mocks/polkadot-full-mock.json:/mockserver/expectations.json \
+      -v ${{ github.workspace }}/mocks/polkadot-static-responses.json:/mockserver/expectations.json \
       mockserver/mockserver:latest
 ```
 
 ## Development
+
+### Local Testing with Act + Podman
+
+You can test the GitHub Actions workflows locally using `act` with Podman:
+
+```bash
+# Install act (if not already installed)
+brew install act  # on macOS
+
+# Start podman
+podman machine start  # if using podman machine
+
+# Run the test script
+./test-local.sh
+```
+
+**Manual Testing:**
+```bash
+# Test JSON lint workflow only
+act -j lint --workflows .github/workflows/jsonlint.yml
+
+# Test MockServer workflow only (with proper architecture)
+act -j test-mockserver --workflows .github/workflows/test-mockserver.yml \
+    --container-architecture linux/amd64
+```
+
+**Environment Variables for Podman:**
+- `DOCKER_HOST` - Points to podman socket (auto-detected on macOS)
+- `TESTCONTAINERS_RYUK_DISABLED=true` - Disables cleanup container
+- `TESTCONTAINERS_CHECKS_DISABLE=true` - Disables environment checks
+
+**Troubleshooting Act + Podman:**
+- On macOS: Ensure `podman machine start` has been run
+- Use `--container-architecture linux/amd64` flag for ARM Macs
+- If socket issues persist, try running act without custom DOCKER_HOST
 
 ### JSON Validation
 This repository includes automated JSON validation via GitHub Actions. All JSON files are automatically linted on push and pull requests.
@@ -235,8 +325,9 @@ This repository includes automated JSON validation via GitHub Actions. All JSON 
 ### Contributing
 1. Fork the repository
 2. Make your changes to the mock configuration
-3. Ensure JSON files are valid
-4. Submit a pull request
+3. Test locally with `./test-local.sh` (optional)
+4. Ensure JSON files are valid
+5. Submit a pull request
 
 ## Troubleshooting
 

@@ -1,0 +1,36 @@
+[
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": {
+        "type": "JSON",
+        "json": {
+          "jsonrpc": "2.0",
+          "method": ".*",
+          "id": ".*"
+        },
+        "matchType": "PARTIAL"
+      }
+    },
+    "httpForward": {
+      "host": "rpc.ibp.network",
+      "port": 443,
+      "scheme": "HTTPS"
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path": "/.*"
+    },
+    "httpForward": {
+      "host": "rpc.ibp.network",
+      "port": 443,
+      "scheme": "HTTPS"
+    }
+  }
+]

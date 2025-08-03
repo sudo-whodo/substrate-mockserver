@@ -13,9 +13,11 @@ from testcontainers.core.container import DockerContainer
 class TestSubstrateMockserver:
     @pytest.fixture(scope="class")
     def mockserver_container(self):
-        """Start MockServer container with the JSON expectations file."""
+        """Start MockServer container with static responses JSON file."""
         # Get the path to the JSON file (relative to project root)
-        json_file = Path(__file__).parent.parent.parent / "mocks" / "polkadot-full-mock.json"
+        json_file = Path(__file__).parent.parent.parent / "mocks" / "polkadot-static-responses.json"
+
+        print(f"\n🧪 Testing with static mock configuration: polkadot-static-responses.json")
 
         # Create and start the container with explicit configuration
         container = DockerContainer("mockserver/mockserver:latest") \
