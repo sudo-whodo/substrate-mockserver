@@ -1,0 +1,206 @@
+[
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "chain_getBlock" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":{\"block\":{\"header\":{\"parentHash\":\"0x0000000000000000000000000000000000000000000000000000000000000000\",\"number\":\"0x01\",\"stateRoot\":\"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef\",\"extrinsicsRoot\":\"0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890\"},\"extrinsics\":[]}},\"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "chain_getBlockHash" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":\"0x1234000000000000000000000000000000000000000000000000000000000000\",\"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "chain_getFinalizedHead" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":\"0xabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef\",\"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "chain_getHeader" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":{\"parentHash\":\"0x0000000000000000000000000000000000000000000000000000000000000000\",\"number\":\"0x01\",\"stateRoot\":\"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef\",\"extrinsicsRoot\":\"0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890\"},\"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "rpc_methods" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":{\"methods\":[\"chain_getBlock\",\"chain_getBlockHash\",\"chain_getHeader\",\"system_chain\",\"system_name\",\"system_version\"],\"version\":\"1.0.0\"},\"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "state_getKeys" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":[],\"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "state_getKeysPaged" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":[],\"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "state_getMetadata" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":\"0x6d65746164617461...\", \"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "state_getRuntimeVersion" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":{\"specVersion\":1010,\"transactionVersion\":6},\"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "state_getStorage" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":\"0x010203\", \"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "system_chain" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":\"mockChain\",\"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "system_health" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":{\"peers\":5,\"isSyncing\":false,\"shouldHavePeers\":true},\"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "system_name" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":\"mockClient\",\"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "system_properties" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":{\"ss58Format\":42},\"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "system_upgradedToTripleRefCount" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":true,\"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "system_version" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":\"9.8.7\",\"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/",
+      "body": { "json": { "method": "dev_echo" } }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"jsonrpc\":\"2.0\",\"result\":[\"echoed_param\"],\"id\":1}",
+      "headers": [{ "name": "Content-Type", "values": ["application/json"] }]
+    }
+  }
+]

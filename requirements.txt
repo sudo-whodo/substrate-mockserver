@@ -1,0 +1,3 @@
+pytest==7.4.3
+testcontainers==3.7.1
+requests==2.31.0

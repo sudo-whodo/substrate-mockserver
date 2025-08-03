@@ -1,0 +1,22 @@
+name: JSON Lint
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+    paths:
+      - '**/*.json'
+  push:
+    paths:
+      - '**/*.json'
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Lint JSON files
+        run: |
+          docker run --rm -v "${{ github.workspace }}:/data" circleci/jsonlint 'mocks/*.json'
