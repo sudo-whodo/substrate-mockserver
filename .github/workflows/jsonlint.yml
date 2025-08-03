@@ -22,25 +22,25 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install jsonlint with pipx
+      - name: Validate JSON files
         run: |
-          python -m pip install --user pipx
-          python -m pipx ensurepath
-          pipx install jsonlint
-
-      - name: Lint JSON files
-        run: |
-          echo "Validating JSON files with jsonlint..."
+          echo "Validating JSON files..."
+          exit_code=0
           for file in mocks/*.json; do
             if [ -f "$file" ]; then
               echo "Checking $file..."
-              jsonlint "$file"
-              if [ $? -eq 0 ]; then
+              if python -m json.tool "$file" > /dev/null 2>&1; then
                 echo "✅ $file is valid JSON"
               else
                 echo "❌ $file is invalid JSON"
-                exit 1
+                exit_code=1
               fi
             fi
           done
-          echo "✅ All JSON files are valid!"
+
+          if [ $exit_code -eq 0 ]; then
+            echo "✅ All JSON files are valid!"
+          else
+            echo "❌ One or more JSON files are invalid"
+            exit 1
+          fi
