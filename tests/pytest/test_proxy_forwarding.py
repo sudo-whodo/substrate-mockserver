@@ -81,7 +81,7 @@ class TestSubstrateProxyForwarding:
                 "params": [],
                 "id": 1
             }
-            test_response = requests.post(base_url, json=test_payload, timeout=30)
+            test_response = requests.post(f"{base_url}/polkadot", json=test_payload, timeout=30)
             print(f"✅ MockServer proxy health check - system_name RPC call: {test_response.status_code}")
             if test_response.status_code == 200:
                 result = test_response.json()
@@ -113,7 +113,7 @@ class TestSubstrateProxyForwarding:
             "id": 1
         }
 
-        response = requests.post(mockserver_container, json=payload, timeout=30)
+        response = requests.post(f"{mockserver_container}/polkadot", json=payload, timeout=30)
         assert response.status_code == 200
 
         data = response.json()
@@ -139,7 +139,7 @@ class TestSubstrateProxyForwarding:
             "id": 1
         }
 
-        response = requests.post(mockserver_container, json=payload, timeout=30)
+        response = requests.post(f"{mockserver_container}/polkadot", json=payload, timeout=30)
         assert response.status_code == 200
 
         data = response.json()
@@ -168,7 +168,7 @@ class TestSubstrateProxyForwarding:
             "id": 1
         }
 
-        response = requests.post(mockserver_container, json=payload, timeout=30)
+        response = requests.post(f"{mockserver_container}/polkadot", json=payload, timeout=30)
         assert response.status_code == 200
 
         data = response.json()

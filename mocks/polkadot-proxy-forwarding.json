@@ -2,18 +2,15 @@
   {
     "httpRequest": {
       "method": "POST",
-      "path": "/",
+      "path": "/.*",
       "headers": {
         "Content-Type": ["application/json"]
       },
       "body": {
         "type": "JSON",
         "json": {
-          "jsonrpc": "2.0",
-          "method": ".*",
-          "id": ".*"
-        },
-        "matchType": "PARTIAL"
+          "jsonrpc": "2.0"
+        }
       }
     },
     "httpForward": {
